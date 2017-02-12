@@ -9,7 +9,10 @@ import hdf5storage
 
 def load_image(img_name):
   # BGR order, 0-255
-  return cv2.imread(img_name)
+  print "Loading iamge: "+str(img_name)
+  img= cv2.imread(img_name)
+  img_cropped= img[0:20, 0:20]
+  return img_cropped
 
 def load_video(vid_name, sample_per_sec = 1):
   cap = cv2.VideoCapture(vid_name)
@@ -46,6 +49,7 @@ def transform_image(img, over_sample = False, mean_pix = [103.939, 116.779, 123.
     dsize = (int(np.floor(float(image_dim)*img.shape[1]/img.shape[0])), image_dim)
   else:
     dsize = (image_dim, int(np.floor(float(image_dim)*img.shape[0]/img.shape[1])))
+  print "Resizing image to "+str(dsize)
   img = cv2.resize(img, dsize, interpolation=cv2.INTER_CUBIC)
 
   # convert to float32

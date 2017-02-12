@@ -66,10 +66,13 @@ class FeatExtractor(caffe.Net):
     return feats
 
 if __name__ == '__main__':
-  caffe.set_mode_gpu()
-  model_file = './caffe_models/vgg_16/VGG_ILSVRC_16_layers_deploy.prototxt'
-  pretrained_file = './caffe_models/vgg_16/VGG_ILSVRC_16_layers.caffemodel'
-  img_list = 'flickr8k_images_fullpath.lst'
+  #caffe.set_mode_gpu()
+  caffe.set_mode_cpu()
+  model_file = './caffe_models/vgg19/VGG_ILSVRC_19_layers.prototxt'
+  pretrained_file = './caffe_models/vgg19/VGG_ILSVRC_19_layers.caffemodel'
+  
+  img_path_prefix="./images/"
+  img_list = img_path_prefix+"images_fullpath.lst"
   start = time.time()
   extractor = FeatExtractor(model_file, pretrained_file, oversample=False)
   print 'intitialization time:', time.time() - start
@@ -78,9 +81,9 @@ if __name__ == '__main__':
   with open(img_list) as f:
     img_names = [l.rstrip() for l in f]
   imgs = []
-  for i in range(13):
+  for i in range(len(img_names)):#range(13):
     img_name = img_names[i]
-    img = load_image(img_name)
+    img = load_image(img_path_prefix+img_name)
     imgs.append(img)
   start = time.time()
   feats1 = extractor.extract(imgs)
@@ -92,4 +95,5 @@ if __name__ == '__main__':
   print len(feats1['fc6']), len(feats2['fc6'])
   for i in xrange(len(feats1['fc6'])):
     print feats1['fc6'][i].shape
+    print feats1['fc6'][i]
     print (feats1['fc6'][i]==feats2['fc6'][i]).all()
